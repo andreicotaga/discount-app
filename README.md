@@ -15,4 +15,3 @@ is to treat the cases when the same order applies to multiple discounts.
     $discount = $order->getDiscount();
 ```
 
-
