@@ -1,0 +1,17 @@
+{
+    "name": "order/discout-microservice",
+    "description": "Calculates discounts for orders",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Order\\DiscoutMicroservice\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrei Cotaga",
+            "email": "andrei.cotaga1@gmail.com"
+        }
+    ],
+    "require": {}
+}
