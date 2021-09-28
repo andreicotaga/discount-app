@@ -2,6 +2,8 @@
 
 namespace Order\DiscountMicroservice;
 
+use Order\DiscountMicroservice\Model\Order;
+
 /**
  * Interface IDiscount
  * @package Order\DiscountMicroservice
@@ -15,8 +17,8 @@ namespace Order\DiscountMicroservice;
 interface IDiscount
 {
     /**
-     * @param array $order
+     * @param Order $order
      * @return mixed
      */
-    public function calculateDiscount(array $order);
+    public function calculateDiscount(Order $order);
 }

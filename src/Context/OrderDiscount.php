@@ -2,7 +2,9 @@
 
 namespace Order\DiscountMicroservice\Context;
 
-use Order\DiscountMicroservice\IDiscount;
+use Order\DiscountMicroservice\Model\Order;
+use Order\DiscountMicroservice\Strategy\CategoryBasedDiscount;
+use Order\DiscountMicroservice\Strategy\CustomerBasedDiscount;
 
 /**
  * Class OrderDiscount
@@ -11,30 +13,32 @@ use Order\DiscountMicroservice\IDiscount;
 class OrderDiscount
 {
     /**
-     * @var array
+     * @var
      */
-    private $order;
-
-    /**
-     * @var int
-     */
-    private $discount = 0;
+    private $strategy;
 
     /**
      * OrderDiscount constructor.
-     * @param array $order
+     * @param string $type
      */
-    public function __construct(array $order)
+    public function __construct(string $type = 'category')
     {
-        $this->order = $order;
+        switch ($type) {
+            case "category":
+                $this->strategy = new CategoryBasedDiscount();
+                break;
+            case "customer":
+                $this->strategy = new CustomerBasedDiscount();
+                break;
+        }
     }
 
     /**
-     * @param IDiscount $discount
+     * @param Order $order
      * @return mixed
      */
-    public function getDiscount(IDiscount $discount)
+    public function getDiscount(Order $order)
     {
-        return $this->discount = $discount->calculateDiscount($this->order);
+        return $this->strategy->calculateDiscount($order);
     }
 }

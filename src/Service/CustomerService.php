@@ -5,16 +5,17 @@ namespace Order\DiscountMicroservice\Service;
 class CustomerService
 {
     /**
-     * Get unique custom
+     * Get unique customer
      *
      * @param string $id
+     * @return mixed
      */
-    public function getCustomer($id)
+    public function getCustomer(string $id)
     {
         $customers = json_decode(file_get_contents('../var/data/customers.json'), true);
 
-        return array_filter($customers, function($customer) use ($id) {
-            return $customer['id'] = $id;
-        });
+        return current(array_filter($customers, function($customer) use ($id) {
+            return $customer['id'] === $id;
+        }));
     }
 }

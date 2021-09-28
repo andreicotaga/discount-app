@@ -4,7 +4,7 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Order\\DiscoutMicroservice\\": "src/"
+            "Order\\DiscountMicroservice\\": "src/"
         }
     },
     "authors": [

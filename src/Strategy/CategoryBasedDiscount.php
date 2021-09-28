@@ -3,6 +3,8 @@
 namespace Order\DiscountMicroservice\Strategy;
 
 use Order\DiscountMicroservice\IDiscount;
+use Order\DiscountMicroservice\Model\Order;
+use Order\DiscountMicroservice\Service\CategoryService;
 
 /**
  * Class CategoryBasedDiscount
@@ -13,16 +15,34 @@ use Order\DiscountMicroservice\IDiscount;
  */
 class CategoryBasedDiscount implements IDiscount
 {
-    /**
-     * A customer who has already bought for over € 1000, gets a discount of 10% on the whole order.
-     * For every product of category "Switches" (id 2), when you buy five, you get a sixth for free.
-     * If you buy two or more products of category "Tools" (id 1), you get a 20% discount on the cheapest product.
-     */
-    /**
-     * @param array $order
-     */
-    public function calculateDiscount(array $order)
-    {
+    const ELIGIBLE_CATEGORIES_FOR_DISCOUNT = [
+        '1',
+        '2'
+    ];
 
+    /**
+     * @var CategoryService
+     */
+    private CategoryService $categoryService;
+
+    /**
+     * CategoryBasedDiscount constructor.
+     */
+    public function __construct()
+    {
+        $this->categoryService = new CategoryService();
+    }
+
+    /**
+     * @param Order $order
+     * @return int
+     */
+    public function calculateDiscount(Order $order)
+    {
+        $categories = $this->categoryService->getProductsCategory($order->getItems());
+
+        if (!empty(array_diff(self::ELIGIBLE_CATEGORIES_FOR_DISCOUNT, $categories))) {
+            return 0;
+        }
     }
 }
