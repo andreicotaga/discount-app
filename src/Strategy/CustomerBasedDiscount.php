@@ -4,6 +4,7 @@ namespace Order\DiscountMicroservice\Strategy;
 
 use Order\DiscountMicroservice\IDiscount;
 use Order\DiscountMicroservice\Model\Order;
+use Order\DiscountMicroservice\Service\CategoryService;
 use Order\DiscountMicroservice\Service\CustomerService;
 
 /**
@@ -21,11 +22,17 @@ class CustomerBasedDiscount implements IDiscount
     private CustomerService $customerService;
 
     /**
+     * @var CategoryService
+     */
+    private CategoryService $categoryService;
+
+    /**
      * CustomerBasedDiscount constructor.
      */
     public function __construct()
     {
         $this->customerService = new CustomerService();
+        $this->categoryService = new CategoryService();
     }
 
     /**
@@ -35,11 +42,13 @@ class CustomerBasedDiscount implements IDiscount
     public function calculateDiscount(Order $order)
     {
         $customer = $this->customerService->getCustomer($order->getCustomerId());
+        $categories = $this->categoryService->getProductsCategory($order->getItems());
 
+        $discount = 0;
         if ((float)$customer['revenue'] > 1000) {
-            return 10;
+            $discount = 10;
         }
 
-        return 0;
+        return $discount;
     }
 }

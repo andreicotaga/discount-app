@@ -2,6 +2,7 @@
 
 namespace Order\DiscountMicroservice\Strategy;
 
+use Order\DiscountMicroservice\Constants\EligibleDiscounts;
 use Order\DiscountMicroservice\IDiscount;
 use Order\DiscountMicroservice\Model\Order;
 use Order\DiscountMicroservice\Service\CategoryService;
@@ -15,11 +16,6 @@ use Order\DiscountMicroservice\Service\CategoryService;
  */
 class CategoryBasedDiscount implements IDiscount
 {
-    const ELIGIBLE_CATEGORIES_FOR_DISCOUNT = [
-        '1',
-        '2'
-    ];
-
     /**
      * @var CategoryService
      */
@@ -39,10 +35,38 @@ class CategoryBasedDiscount implements IDiscount
      */
     public function calculateDiscount(Order $order)
     {
+        $discount = 0;
         $categories = $this->categoryService->getProductsCategory($order->getItems());
 
-        if (!empty(array_diff(self::ELIGIBLE_CATEGORIES_FOR_DISCOUNT, $categories))) {
-            return 0;
+        $eligibleCategory = current(array_intersect(array_keys(EligibleDiscounts::ELIGIBLE_CATEGORIES_FOR_DISCOUNT), $categories));
+
+        if (empty($eligibleCategory)) {
+            return $discount;
         }
+
+        $conditions = EligibleDiscounts::ELIGIBLE_CATEGORIES_FOR_DISCOUNT[$eligibleCategory];
+
+        foreach ($order->getItems() as $item) {
+            $totalQuantity = 0;
+            $totalQuantity += $item['quantity'];
+
+            if ($item['quantity'] > $conditions['quantity']) {
+                $freeItems = (int)($item['quantity']/$conditions['quantity']);
+
+                $newQuantity = $item['quantity'] - $freeItems;
+                $newTotal = $item['unit-price'] * $newQuantity;
+
+                $discount = ($order->getTotal() - $newTotal)/$order->getTotal()*100;
+            }
+
+            $minPriceProduct = min($order->getItems());
+            if ($totalQuantity >= $conditions['quantity']) {
+                // Set new product total price based on minPriceProduct
+                // Calculate new total and set it on order
+                // Based on that calculate discount ($order->getTotal() - $newTotal)/$order->getTotal()*100;
+            }
+        }
+
+        return $discount;
     }
 }

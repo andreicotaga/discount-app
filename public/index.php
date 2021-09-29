@@ -21,10 +21,6 @@ $discountDataOne = $orderDiscountOne->getDiscount($orderOne);
 $discountDataTwo = $orderDiscountTwo->getDiscount($orderTwo);
 $discountDataThree = $orderDiscountThree->getDiscount($orderThree);
 
-//var_dump($discountDataOne);
-//var_dump($discountDataTwo);
-//var_dump($discountDataThree);
-
 $orderOne->setTotalDiscount($discountDataOne);
 $orderTwo->setTotalDiscount($discountDataTwo);
 $orderThree->setTotalDiscount($discountDataThree);
